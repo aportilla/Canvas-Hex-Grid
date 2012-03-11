@@ -276,8 +276,8 @@ var HexWorld = function(){
             }
             
             if (newHoverTargets){
-                console.log('hover over : ' + x + ':' + y);
-                console.log(newHoverTargets);
+                //console.log('hover over : ' + x + ':' + y);
+                //console.log(newHoverTargets);
                 var tCount = newHoverTargets.length;
                 for (var i=0; i<tCount; i++){  
                     my.actors[newHoverTargets[i]].fire('hover:on');
@@ -342,7 +342,9 @@ var HexWorld = function(){
              
             // get actors out of the manifest and render them...
             var localActors = my.tileManifest[x + ':' + y];
-
+            
+            //console.log(localActors);
+            
             if (localActors){
                 //console.log('actors : ' + x + ':' + y);
                 var laCount = localActors.length;
@@ -439,6 +441,7 @@ var HexWorld = function(){
                     if (dirtyKeys[pos]){ continue; }
                     dirtyKeys[pos] = true;
                     posarr = pos.split(':');
+                    //console.log('drawing tile - ' + pos);
                     my.drawTile(parseInt(posarr[0]),parseInt(posarr[1]));
                 }
                 
@@ -568,9 +571,10 @@ var HexWorld = function(){
                 my.dirtyTiles.push(posKey);
                 
                 obj.on('remove',function(){
-                    console.log('remove');
+                    //console.log('remove');
                     // remove from tile manifest
-                    var curmanifest = my.tileManifest[obj.getPosKey()] || [];
+                    var k = obj.getPosKey();
+                    var curmanifest = my.tileManifest[k] || [];
 
                     var mCount = curmanifest.length;
                     for (var i=0; i<mCount; i++){
@@ -580,27 +584,19 @@ var HexWorld = function(){
                         }
                     }
                     
-                    my.dirtyTiles.push(obj.getPosKey());
-                    console.log('object removed from tile: ' + obj.getPosKey());
+                    my.tileManifest[k] = curmanifest;
+                    my.dirtyTiles.push(k);
+                    //console.log('object removed from tile: ' + obj.getPosKey());
                     
                 });
                 
                 obj.on('insert',function(){
-                    
-
-                    console.log('insert');
-                    
-                    var manifest = my.tileManifest[posKey] || function(){
-                        my.tileManifest[posKey] = [];
-                        return my.tileManifest[posKey];
-                    }();
-                    
+                    var k = obj.getPosKey();
+                    var manifest = my.tileManifest[k] || [];
                     manifest.push(obj.getId());
-                    
-                    my.dirtyTiles.push(obj.getPosKey());
-                
-                    console.log('object inserted into tile: ' + obj.getPosKey());
-
+                    my.tileManifest[k] = manifest;
+                    my.dirtyTiles.push(k);
+                    //console.log('object inserted into tile: ' + obj.getPosKey());
                 });
                 
                 obj.on('dirty',function(){

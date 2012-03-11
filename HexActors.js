@@ -198,7 +198,8 @@ var HexClickChaser = function(p,my){
     
     that.render = function(ctx,xpos,ypos){
         
-        console.log('render chaser');
+        //console.log('render chaser');
+        //console.log(arguments);
         
         ctx.save();
         ctx.translate(my.offsetX,my.offsetY);
@@ -222,7 +223,22 @@ var HexClickChaser = function(p,my){
         var pDiff = hexToPixels(xDiff,yDiff,my.a,my.b,my.c,my.d);
         var m = pDiff.y / pDiff.x;
         
-        console.log('moving: ' + my.id);
+        //console.log('moving: ' + my.id);
+        
+        //that.fire('remove');
+        //that.fire('dirty');
+        
+        //console.log('updating item properties');
+        //my.offsetX = 0;
+        //my.offsetY = 0;
+        //my.x = x;
+        //my.y = y;
+        
+        
+        
+        //that.fire('insert');
+        //that.fire('dirty');
+        
         
         aFrame.step('moving:' + that.getId(),'easeOutQuad',0,pDiff.x,500,function(n){
 
@@ -233,21 +249,25 @@ var HexClickChaser = function(p,my){
         }).then(function(){
             
             that.fire('remove');
+            that.fire('dirty');
             
-            console.log('updating item properties');
+            //console.log('updating item properties');
             my.offsetX = 0;
             my.offsetY = 0;
             my.x = x;
             my.y = y;
             
             that.fire('insert');
+            that.fire('dirty');
+            
+            //that.setXY(x,y);
             
             //console.log(x + ':' + y);
-            //that.setXY(x,y);
             //console.log('destroy:' + that.getId());
             //that.fire('destroy');
         });
         
+
         
     };
     
