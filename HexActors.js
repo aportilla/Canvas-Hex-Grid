@@ -244,7 +244,7 @@ var HexClickChaser = function(p,my){
 
             my.offsetX = n;
             my.offsetY = m * n;
-            that.fire('dirty');
+            that.fire('dirty',{ all : true });
 
         }).then(function(){
             

@@ -429,7 +429,9 @@ var HexWorld = function(){
                 
             // if any individual tiles are dirty
             // then redraw them...
-            } else if (my.dirtyTiles.length) {
+            }
+            
+            if (my.dirtyTiles.length) {
                 
                 var dirtyCount = my.dirtyTiles.length;
                 var pos;
@@ -599,7 +601,16 @@ var HexWorld = function(){
                     //console.log('object inserted into tile: ' + obj.getPosKey());
                 });
                 
-                obj.on('dirty',function(){
+                /*
+                 * passing the 'all' option will render 
+                 * the full set before updating the dirty tile
+                 * which is usefull for animations that may
+                 * overlap into neighboring tiles.
+                 */
+                obj.on('dirty',function(opt){
+                    if (opt && opt.all === true){
+                      my.drawDirty = true;
+                    }
                     my.dirtyTiles.push(obj.getPosKey());
                 });
                 
