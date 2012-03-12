@@ -5,15 +5,110 @@
  * current hex perspective (a,b,c,d)
  */
 var hexToPixels = function(x,y,a,b,c,d){
-  
   var xc = x + y,
     yc = (-3 * y) + xc;
-  
   return {
     x : (xc * c) + (yc * a),
     y : -((xc * -d) + (yc * b))
   };
 };
+
+var hexNeighbors = function(x,y){
+  return [
+    [x+1,y+1],
+    [x+1,y],
+    [x,y+1],
+    [x,y-1],
+    [x-1,y],
+    [x-1,y-1]
+  ];
+};
+
+// the number of hex moves between two hex coordinates
+var hexDistance = function(xA,yA,xB,yB){
+  var xDif = xB - xA;
+  var yDif = yB - yA;
+  return Math.max(Math.abs(xDif),Math.abs(yDif),Math.abs(xDif - yDif));
+};
+
+var lineSlope = function(xA,yA,xB,yB){
+  return (yA - yB) / (xA - xB);
+};
+
+var yIntercept = function(m,x,y){
+  return y - (m * x);
+};
+
+var distance = function(xA,yA,xB,yB){
+  return Math.sqrt(Math.pow(Math.abs(xA - xB),2) + Math.pow(Math.abs(yA - yB),2));
+};
+
+
+/*
+ * Hex Line
+ *
+ * Calculate the y-intercept of the line, then
+ * compare the y-intercepts of the possible
+ * next steps as we move from one end to 
+ * the other, and choose the step with the 
+ * y-intercept closer the lines true y-intercept.
+ * 
+ * @return an array of adjacent points
+ *     directly between points A and B
+ *
+ */
+var hexLine = function(xA,yA,xB,yB){
+
+  var result = [xA + ':' + yA],
+    slope = xA === xB ? 1000000 : lineSlope(xA,yA,xB,yB),
+    hexDist = hexDistance(xA,yA,xB,yB),
+    yInt = yIntercept(slope,xA,yA),
+    xDiff = xB - xA,
+    yDiff = yB - yA,
+    xC = xA,
+    yC = yA,
+    incA,
+    incB,
+    aTest,
+    bTest;
+
+  // 0,-1  1,0  1,1  0,1
+  if (xB > xA) {
+    if (yB > yA) {
+      incA = [1,1];
+      incB = (Math.abs(xDiff) > Math.abs(yDiff)) ? [1,0] : [0,1];
+    } else {
+      incA = [0,-1];
+      incB = [1,0];
+    } 
+  // 0,-1  -1,-1  -1,0  0,1
+  } else {
+    if (yB > yA) {
+      incA = [-1,0];
+      incB = [0,1];
+    } else {
+      incA = [-1,-1];
+      incB = (Math.abs(xDiff) > Math.abs(yDiff)) ? [-1,0] : [0,-1];
+    }
+  }
+  
+  for (var i=0; i<hexDist; i++){
+    aTest = Math.abs(yIntercept(slope,xC + incA[0],yC + incA[1]) - yInt);
+    bTest = Math.abs(yIntercept(slope,xC + incB[0],yC + incB[1]) - yInt);
+    if (aTest < bTest) {
+      xC += incA[0];
+      yC += incA[1];
+    } else {
+      xC += incB[0];
+      yC += incB[1];
+    }
+    result.push(xC + ':' + yC);
+  }
+  
+  return result;
+
+};
+
 
 
 var HexActor = function(p,my){
@@ -223,23 +318,6 @@ var HexClickChaser = function(p,my){
     var pDiff = hexToPixels(xDiff,yDiff,my.a,my.b,my.c,my.d);
     var m = pDiff.y / pDiff.x;
     
-    //console.log('moving: ' + my.id);
-    
-    //that.fire('remove');
-    //that.fire('dirty');
-    
-    //console.log('updating item properties');
-    //my.offsetX = 0;
-    //my.offsetY = 0;
-    //my.x = x;
-    //my.y = y;
-    
-    
-    
-    //that.fire('insert');
-    //that.fire('dirty');
-    
-    
     aFrame.step('moving:' + that.getId(),'easeOutQuad',0,pDiff.x,500,function(n){
 
       my.offsetX = n;
@@ -251,7 +329,6 @@ var HexClickChaser = function(p,my){
       that.fire('remove');
       that.fire('dirty');
       
-      //console.log('updating item properties');
       my.offsetX = 0;
       my.offsetY = 0;
       my.x = x;
@@ -259,12 +336,7 @@ var HexClickChaser = function(p,my){
       
       that.fire('insert');
       that.fire('dirty');
-      
-      //that.setXY(x,y);
-      
-      //console.log(x + ':' + y);
-      //console.log('destroy:' + that.getId());
-      //that.fire('destroy');
+
     });
     
 
