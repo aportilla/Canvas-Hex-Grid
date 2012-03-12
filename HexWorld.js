@@ -261,9 +261,9 @@ var HexWorld = function(){
         my.curHover = new tuple();
         
         my.curHover.onChange(function(x,y,ox,oy){
+
             //my.drawTile(ox,oy);
-            //my.drawTile(x,y,my.hoverColor);
-            
+            //my.drawTile(x,y,my.hoverColor);    
             var newHoverTargets = my.tileManifest[x + ':' + y];
             var oldHoverTargets = my.tileManifest[ox + ':' + oy]; 
             if (oldHoverTargets){

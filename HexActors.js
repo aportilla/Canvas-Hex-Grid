@@ -47,11 +47,13 @@ var distance = function(xA,yA,xB,yB){
 /*
  * Hex Line
  *
- * Calculate the y-intercept of the line, then
- * compare the y-intercepts of the possible
- * next steps as we move from one end to 
- * the other, and choose the step with the 
- * y-intercept closer the lines true y-intercept.
+ * There are many paths on a hex grid that
+ * will go from piont A to B with the same
+ * number of steps,  this function returns
+ * one of them that approximates an 
+ * as-the-crow-flights direct route, rather
+ * than simply following one axis and then
+ * another.
  * 
  * @return an array of adjacent points
  *     directly between points A and B
@@ -153,6 +155,7 @@ var HexActor = function(p,my){
   };
   
   return that;
+
 };
 
 var HexPawn = function(p,my){
@@ -317,8 +320,8 @@ var HexClickChaser = function(p,my){
     var yDiff = y - my.y;
     var pDiff = hexToPixels(xDiff,yDiff,my.a,my.b,my.c,my.d);
     var m = pDiff.y / pDiff.x;
-    
-    aFrame.step('moving:' + that.getId(),'easeOutQuad',0,pDiff.x,500,function(n){
+    var dist = hexDistance(my.x,my.y,x,y);
+    aFrame.step('moving:' + that.getId(),'easeOutQuad',0,pDiff.x,Math.floor(dist * 150),function(n){
 
       my.offsetX = n;
       my.offsetY = m * n;
