@@ -158,6 +158,49 @@ var HexActor = function(p,my){
 
 };
 
+var HexWall = function(p,my){
+
+
+  my = my || {};
+  var that = HexActor(p,my);
+  
+  that.type = 'wall';
+  
+  my.pressed = false;
+  
+  that.render = function(ctx,xpos,ypos,a,b,c,d){
+  
+    a = a*.9;
+    b = b*.9;
+    c = c*.9;
+    d = d*.9;
+    
+    ctx.save();
+    ctx.translate(xpos - c,ypos - b - d);
+      
+    ctx.strokeStyle = 'rgba(200,200,255,0.5)';
+    ctx.lineWidth = 1;
+    ctx.beginPath();
+    ctx.moveTo(0,b);
+    ctx.lineTo(a,0);
+    ctx.lineTo(a+c,d);
+    ctx.lineTo(a+c,d);
+    ctx.lineTo(2*c,b + 2*d);
+    ctx.lineTo(2*c - a, 2*b + 2*d);
+    ctx.lineTo(c - a, 2*b + d);
+    ctx.closePath();
+    ctx.fillStyle = 'rgba(200,200,255,0.2)';
+    ctx.fill();
+    ctx.stroke();
+    
+    ctx.restore();
+    
+  };
+  
+  return that;
+  
+};
+
 var HexPawn = function(p,my){
   
   my = my || {};

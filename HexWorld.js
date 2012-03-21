@@ -337,8 +337,8 @@ var HexWorld = function(){
             ctx.save();
             ctx.translate(pos.x + my.viewPosX,pos.y + my.viewPosY);
             hex(ctx,my.a,my.b,my.c,my.d,(color || bgcolor),'#123412');
-            ctx.fillStyle = "rgba(255,255,255,0.5)"; 
-            ctx.fillText(x+'  '+y, 20,20); 
+            //ctx.fillStyle = "rgba(255,255,255,0.5)"; 
+            //ctx.fillText(x+'  '+y, 20,20); 
              
             // get actors out of the manifest and render them...
             var localActors = my.tileManifest[x + ':' + y];
